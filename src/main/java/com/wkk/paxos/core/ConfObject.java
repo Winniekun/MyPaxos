@@ -20,5 +20,51 @@ public class ConfObject {
 
     }
 
+    public List<InfoObject> getNodes() {
+        return nodes;
+    }
 
+    public void setNodes(List<InfoObject> nodes) {
+        this.nodes = nodes;
+    }
+
+    public int getMyid() {
+        return myid;
+    }
+
+    public void setMyid(int myid) {
+        this.myid = myid;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public int getLearningInterval() {
+        return learningInterval;
+    }
+
+    public void setLearningInterval(int learningInterval) {
+        this.learningInterval = learningInterval;
+    }
+
+    public String getDataDir() {
+        return dataDir;
+    }
+
+    public void setDataDir(String dataDir) {
+        this.dataDir = dataDir;
+    }
+
+    public boolean isEnableDatePersistence() {
+        return enableDatePersistence;
+    }
+
+    public void setEnableDatePersistence(boolean enableDatePersistence) {
+        this.enableDatePersistence = enableDatePersistence;
+    }
 }

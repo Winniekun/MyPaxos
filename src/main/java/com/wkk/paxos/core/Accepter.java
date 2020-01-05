@@ -1,10 +1,15 @@
 package com.wkk.paxos.core;
 
+import com.google.gson.Gson;
 import com.wkk.paxos.packet.Value;
+import com.wkk.paxos.utils.client.CommClient;
 import org.omg.PortableInterceptor.INACTIVE;
+import sun.rmi.runtime.Log;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * @Time: 19-12-5下午9:19
@@ -37,5 +42,17 @@ public class Accepter {
     private Map<Integer, Instance> instanceState = new HashMap<Integer, Instance>();
     private Map<Integer, Value> acceptedValue = new HashMap<Integer, Value>();
     private transient int id;
+    private transient List<InfoObject> proposers;
+    private transient InfoObject my;
+    private volatile int lastInstanceId = 0;
+    private ConfObject confObject;
+    private int groupId;
+
+    private Gson gson = new Gson();
+
+    private Logger logger = Logger.getLogger("MyPaxos");
+    // 客户端
+    private CommClient client;
+
 }
 

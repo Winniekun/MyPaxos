@@ -187,7 +187,32 @@ Client     Acceptor
 
 
 
+#### 方案1： 确定一个不可变变量的取值
 
+**先考虑系统由单个Acceptor组成，通过列斯互斥锁机制，来管理并发的proposer运行**
+
+1. Proposer首先向acceptor申请acceptor的互斥访问权限，然后才能请求Acceptor接受自己的取值
+2. 让proposer按照获取互斥访问权的顺序，依次访问acceptor。
+3. 一旦Acceptor接受了某个Proposer的取值，则认为var值被确定 ， 其他的Proposer不再更改
+
+**基于互斥访问权的Acceptor的实现**
+
+* Acceptor保存变量var和一个互斥锁lock
+* Acceptor::prepare():
+  * 加互斥锁，给予var的互斥访问权，并返回var当前的取值f。
+* Acceptor::release()
+  * 解互斥锁，收回var的互斥访问权
+* Acceptor::accept(var, V):
+  * 如果已经加锁，并且var没有取值，则 设置var为V。并且释放锁。
+
+**propose(var, V)的两阶段实现**
+
+* 第一阶段： 通过 Acceptor::prepare获取互斥访问权和当前的var的取值
+  * 如果不能， 返回\<error>(锁被别人占用)
+* 第二阶段： 根据当前var的取值f，选择执行：
+  * 如果f为Null，则通过Acceptor::accept(var, V)提交数据V
+  * 如果f不为空， 则通过Acceptor::release()释放访问权， 返回\<ok, f>
+* 
 
 
 
@@ -197,4 +222,6 @@ Client     Acceptor
 * [The Paxos Algorithm](https://www.youtube.com/watch?v=d7nAGI_NZPk)
 * [可靠分布式系统基础Paxos的直观解释](https://drmingdrmer.github.io/tech/distributed/2015/11/11/paxos-slide.html)
 * paxos-simple.pdf
+* [微信自研生产级paxos类库PhxPaxos实现原理介绍](https://mp.weixin.qq.com/s?__biz=MzI4NDMyNTU2Mw==&mid=2247483695&idx=1&sn=91ea422913fc62579e020e941d1d059e#rd)
+* [paxos和分布式系统](https://www.bilibili.com/video/av61253978/?spm_id_from=333.788.videocard.6)
 
